@@ -3,12 +3,16 @@ function login(){
 	var password =  document.getElementById('password').value;
 	console.log(email,password);
 	var db = firebase.firestore();
+    var login = 0;
 	db.collection("Users").where('email','==',email).where('password','==',password).get().then((querySnapshot) => {
 		querySnapshot.forEach((doc) => {
-				// alert(`${doc.data()['idNumber']}`);
-				// alert(`${doc.data()['personalName']}`);
-				  window.location.assign("task.php");
-		});
+            login = doc.data();
+		})
+        if(login != 0 ){
+		    window.location.assign("task.php");
+        } else {
+            alert("Login Gagal");
+        }
 	});
 }
 
