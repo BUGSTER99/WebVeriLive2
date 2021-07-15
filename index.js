@@ -1,8 +1,11 @@
+var db = firebase.firestore();
+data();
+
+
 function login(){
 	var email =  document.getElementById('email').value;
 	var password =  document.getElementById('password').value;
 	console.log(email,password);
-	var db = firebase.firestore();
     var login = 0;
 	db.collection("Users").where('email','==',email).where('password','==',password).get().then((querySnapshot) => {
 		querySnapshot.forEach((doc) => {
@@ -18,7 +21,7 @@ function login(){
 
 
 function data(){
-db.collection("Loan Information")
+db.collection('/Users/QIMliaygAtVpYjxmaAQb4SriMz52/Loan Information')
 .get()
 .then(querySnapshot=>{
         querySnapshot.forEach(doc=>{
