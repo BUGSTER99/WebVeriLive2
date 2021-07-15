@@ -21,24 +21,21 @@ function login(){
 
 
 function data(){
-db.collection('Users')
+    var number = 0;
+db.collection('Loan Information').orderBy("currentDateTime","desc")
 .get()
 .then(querySnapshot=>{
         querySnapshot.forEach((doc)=>{
-            db.collection('Users/'+doc.id+'/Loan Information').get().then(querySnapshot => {
-                querySnapshot.forEach((doc) => {
-                    let data = doc.data();
-                    let row  = `<tr id="${data.loan_id}">
-                                    <td>${data.loan_id}</td>
-                                    <td>${data.name}</td>
-                                    <td>${data.date}</td>
-                                    <td>${data.amount}</td>
-                                    <td>${data.status}</td>
-                            </tr>`;
-                    let table = document.getElementById('myTable')
-                    table.innerHTML += row
-                });
-            });
+            let data = doc.data();
+            let row  = `<tr>
+                            <td>${++number}</td>
+                            <td>${data.name}</td>
+                            <td>${data.date}</td>
+                            <td>${data.amount}</td>
+                            <td>${data.status}</td>
+                    </tr>`;
+            let table = document.getElementById('myTable')
+            table.innerHTML += row
         });
     })
     .catch(err=>{
