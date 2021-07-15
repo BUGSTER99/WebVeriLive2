@@ -1,6 +1,6 @@
 var db = firebase.firestore();
 data();
-
+sort();
 
 function login(){
 	var email =  document.getElementById('email').value;
@@ -21,23 +21,43 @@ function login(){
 
 
 function data(){
-db.collection('/Users/QIMliaygAtVpYjxmaAQb4SriMz52/Loan Information')
+db.collection('Users')
 .get()
 .then(querySnapshot=>{
-        querySnapshot.forEach(doc=>{
-            let data = doc.data();
-            let row  = `<tr>
-            				<td>${data.loan_id}</td>
-                            <td>${data.name}</td>
-                            <td>${data.date}</td>
-                            <td>${data.amount}</td>
-                            <td>${data.status}</td>
-                      </tr>`;
-            let table = document.getElementById('myTable')
-            table.innerHTML += row
-        })
+        querySnapshot.forEach((doc)=>{
+            db.collection('Users/'+doc.id+'/Loan Information').get().then(querySnapshot => {
+                querySnapshot.forEach((doc) => {
+                    let data = doc.data();
+                    let row  = `<tr id="${data.loan_id}">
+                                    <td>${data.loan_id}</td>
+                                    <td>${data.name}</td>
+                                    <td>${data.date}</td>
+                                    <td>${data.amount}</td>
+                                    <td>${data.status}</td>
+                            </tr>`;
+                    let table = document.getElementById('myTable')
+                    table.innerHTML += row
+                });
+            });
+        });
     })
     .catch(err=>{
         console.log(`Error: ${err}`)
     });
 }
+
+function sort(){
+    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+// do the work...
+document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+    const table = th.closest('table');
+    Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+        .forEach(tr => table.appendChild(tr) );
+})));
+    }
